@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Button Loudness Scale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: gutter grid. Narrow left gutter holds large pale section numbers; content column to the right. Single light theme on purpose (the design system is single-mode). */
+:root {
+  --paper: #ffffff;
+  --ink: #343434;        /* gray-800 */
+  --ink-soft: #757575;   /* gray-700 */
+  --rule: #e3e3e3;       /* gray-200 */
+  --numeral: #e3e3e3;
+  --gap: #d63d08;        /* marker for gaps only */
+  /* design system specimen colors */
+  --ds-orange: #f15c02;  /* orange-500 */
+  --ds-blue: #07729c;    /* blue-700 */
+  --ds-edge: inset 0 -2px 0 0 rgba(0,0,0,.25); /* effect.button-edge */
+  --font: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-ds: "Maison Neue", Helvetica, Arial, sans-serif;
+  --gutter: 88px;
+  color-scheme: light;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.55; }
+.page { max-width: 1120px; margin: 0 auto; padding-inline: 24px; padding-block: 56px 72px; }
+
+header { display: grid; grid-template-columns: var(--gutter) 1fr; gap: 0 24px; margin-bottom: 56px; }
+header .eyebrow { grid-column: 2; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 12px; }
+header h1 { grid-column: 2; font-size: 40px; line-height: 1.1; font-weight: 700; letter-spacing: -.02em; margin: 0 0 16px; text-wrap: balance; }
+header p { grid-column: 2; max-width: 64ch; margin: 0; color: var(--ink); }
+header .meta { grid-column: 2; margin: 0 0 20px; font-size: 13px; color: var(--ink-soft); }
+header .context { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--rule); color: var(--ink-soft); font-size: 13.5px; }
+header a { color: var(--ds-blue); }
+
+section { display: grid; grid-template-columns: var(--gutter) minmax(0,1fr); gap: 0 24px; padding-top: 40px; margin-top: 40px; border-top: 1px solid var(--rule); }
+.num { font-size: 72px; line-height: .9; font-weight: 700; color: var(--numeral); letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.body { min-width: 0; }
+h2 { font-size: 22px; font-weight: 700; margin: 0 0 6px; letter-spacing: -.01em; }
+.lede { margin: 0 0 24px; color: var(--ink-soft); max-width: 70ch; }
+
+.scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 860px; }
+th { text-align: left; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); padding: 0 16px 12px 0; border-bottom: 1px solid var(--ink); }
+td { padding: 20px 16px 20px 0; border-bottom: 1px solid var(--rule); vertical-align: middle; font-size: 14px; }
+td.vol { font-weight: 700; font-size: 16px; }
+td.note { color: var(--ink-soft); font-size: 13px; max-width: 34ch; }
+td .use { display: block; }
+td .sub { display: block; color: var(--ink-soft); font-size: 12.5px; margin-top: 2px; }
+
+/* specimens */
+.btn { font-family: var(--font-ds); display: inline-flex; align-items: center; justify-content: center; width: 168px; height: 44px; font-size: 13px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; border-radius: 0; box-sizing: border-box; }
+.btn.purchase { background: var(--ds-orange); color: #fff; box-shadow: var(--ds-edge); }
+.btn.secondary { background: var(--ds-blue); color: #fff; box-shadow: var(--ds-edge); }
+.btn.tertiary { background: #fff; color: var(--ds-blue); border: 1px solid var(--ds-blue); box-shadow: var(--ds-edge); }
+.btn.outline-orange { background: #fff; color: var(--ds-orange); border: 1px solid var(--ds-orange); }
+.btn.missing { border: 1px dashed var(--ink-soft); color: var(--ink-soft); font-family: var(--font); font-weight: 500; text-transform: none; letter-spacing: 0; font-size: 12.5px; }
+.lnk { font-family: var(--font-ds); color: var(--ds-blue); font-size: 14px; }
+.lnk.bold { font-weight: 700; text-decoration: none; }
+.lnk.inline { font-weight: 400; text-decoration: underline; text-underline-offset: 3px; }
+
+/* status marks */
+.st { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; white-space: nowrap; }
+.st::before { content: ""; width: 9px; height: 9px; border-radius: 50%; box-sizing: border-box; }
+.st.have::before { background: var(--ink); }
+.st.prop::before { border: 1.5px solid var(--ink); }
+.st.gap { color: var(--gap); }
+.st.gap::before { border: 1.5px dashed var(--gap); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 16px 0 0; font-size: 12.5px; color: var(--ink-soft); }
+.legend .st { font-weight: 500; color: var(--ink-soft); }
+.legend .st.gap { color: var(--gap); }
+
+/* gaps table */
+table.gaps { min-width: 720px; }
+table.gaps td { vertical-align: top; }
+table.gaps td:first-child { font-weight: 700; width: 18%; }
+table.gaps td:nth-child(2) { width: 42%; }
+table.gaps td:nth-child(3) { color: var(--ink); }
+
+.foot { margin-top: 48px; display: grid; grid-template-columns: var(--gutter) 1fr; gap: 0 24px; font-size: 12px; color: var(--ink-soft); }
+.foot p { grid-column: 2; margin: 0; }
+.foot a { color: var(--ds-blue); }
+a:focus-visible { outline: 2px solid #005fcc; outline-offset: 2px; }
+
+@media (max-width: 720px) {
+  header, section, .foot { grid-template-columns: 1fr; }
+  header > *, .foot p { grid-column: 1; }
+  .num { font-size: 48px; margin-bottom: 12px; }
+  header h1 { font-size: 30px; }
+  .page { padding-inline: 16px; padding-block: 36px 48px; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <header>
+    <p class="eyebrow">Design system · For discussion</p>
+    <h1>Button Loudness Scale</h1>
+    <p class="meta">Andrés Guerrero · September 29, 2026</p>
+    <p>Our buttons and links, ranked from loudest to quietest, following Viget's Loudness Guide. Loudness is separate from meaning. Each row is how much attention an element asks for, and the gaps are where we have nothing to offer.</p>
+    <p class="context"><strong>Why this exists.</strong> On the TradeMaster landing page, feedback asked for a more prominent Join CTA. The only option louder than Secondary was the orange Purchase button, which we reserve for commerce. The team approved orange as an exception, and this scale is meant to open the conversation about the gap behind that decision.</p>
+  </header>
+
+  <section>
+    <div class="num">01</div>
+    <div class="body">
+      <h2>The scale today</h2>
+      <p class="lede">Seven levels, same as Viget's guide. We cover six. The loudest level has nothing, so any "make it pop" request falls to orange.</p>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr><th>Element</th><th>Volume</th><th>Type</th><th>Frequency</th><th>Use</th><th>Status</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="btn missing">No component</span></td>
+              <td class="vol">Scream</td>
+              <td>Promotional</td>
+              <td>Selectively</td>
+              <td><span class="use">Acquisition and promo moments</span><span class="sub">TradeMaster join, sitewide promo banners</span></td>
+              <td><span class="st gap">Gap</span></td>
+              <td class="note">Today these requests use Purchase orange, as an exception.</td>
+            </tr>
+            <tr>
+              <td><span class="btn purchase">Add to cart</span></td>
+              <td class="vol">Yell</td>
+              <td>Purchase</td>
+              <td>Constantly</td>
+              <td><span class="use">Purchase progression only</span><span class="sub">Add to cart, checkout CTAs</span></td>
+              <td><span class="st have">Have</span></td>
+              <td class="note">On every product card, so it's our loudest button and also our most frequent one. TradeMaster exception approved 2026-09-28.</td>
+            </tr>
+            <tr>
+              <td><span class="btn secondary">Save</span></td>
+              <td class="vol">Shout</td>
+              <td>Secondary</td>
+              <td>Often</td>
+              <td><span class="use">The one primary non-commerce action</span><span class="sub">Modal confirm, My Account actions</span></td>
+              <td><span class="st have">Have</span></td>
+              <td class="note">Gets lost on the blue TradeMaster band.</td>
+            </tr>
+            <tr>
+              <td><span class="btn outline-orange">Reorder</span></td>
+              <td class="vol">Cheer</td>
+              <td>Outlined orange</td>
+              <td>Occasionally</td>
+              <td><span class="use">Lower-emphasis commerce</span><span class="sub">Reorder</span></td>
+              <td><span class="st prop">Proposed</span></td>
+              <td class="note">Working convention, not ratified yet.</td>
+            </tr>
+            <tr>
+              <td><span class="btn tertiary">Cancel</span></td>
+              <td class="vol">Murmur</td>
+              <td>Tertiary</td>
+              <td>Often</td>
+              <td><span class="use">Grouped or subordinate actions</span><span class="sub">Cancel, Apply promo, Add PO</span></td>
+              <td><span class="st have">Have</span></td>
+              <td class="note"></td>
+            </tr>
+            <tr>
+              <td><span class="lnk bold">View all</span></td>
+              <td class="vol">Whistle</td>
+              <td>Link, standalone</td>
+              <td>Often</td>
+              <td><span class="use">Standalone navigation</span><span class="sub">Bold, no underline</span></td>
+              <td><span class="st have">Have</span></td>
+              <td class="note">3 sizes × bold/regular × surface.</td>
+            </tr>
+            <tr>
+              <td><span class="lnk inline">Return policy</span></td>
+              <td class="vol">Whisper</td>
+              <td>Link, inline</td>
+              <td>Often</td>
+              <td><span class="use">Links inside running text</span><span class="sub">Regular, underlined</span></td>
+              <td><span class="st have">Have</span></td>
+              <td class="note">Underline depends on context.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="legend">
+        <span class="st have">Have: in the UI Kit</span>
+        <span class="st prop">Proposed: in use, not ratified</span>
+        <span class="st gap">Gap: needs a decision</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="num">02</div>
+    <div class="body">
+      <h2>Gaps across every level</h2>
+      <p class="lede">These don't belong to one row. They limit how loud any button can get.</p>
+      <div class="scroll">
+        <table class="gaps">
+          <thead><tr><th>Gap</th><th>What happens today</th><th>To discuss</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>No loudest level</td>
+              <td>Nothing sits above Secondary except Purchase, so promotional CTAs borrow orange.</td>
+              <td>What does Scream look like for us, and where is it allowed?</td>
+            </tr>
+            <tr>
+              <td>Colored surfaces</td>
+              <td>No inverse button. The white-filled version looked "broken" on the TradeMaster and Day Saver banners. Link already has an inverse option; Button doesn't.</td>
+              <td>Inverse versions of each button, or one inverse button designed properly?</td>
+            </tr>
+            <tr>
+              <td>Size</td>
+              <td>Buttons are a fixed 343px wide in Figma, with no size options. "Larger button, larger font" has no approved answer.</td>
+              <td>Add a size scale so size can make a button louder, not only color.</td>
+            </tr>
+            <tr>
+              <td>Meaning vs. loudness</td>
+              <td>Each level is tied to a meaning. Orange means "this buys something," so we can't make something louder without changing what it means.</td>
+              <td>Does orange mean purchase only, or conversion (purchase plus enrollment)?</td>
+            </tr>
+            <tr>
+              <td>Frequency</td>
+              <td>In Viget's guide, louder elements show up less often. Our loudest button shows up the most, so an orange promo only stands out on pages with no Add to Cart.</td>
+              <td>Should the loudest level be rare by rule?</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <div class="foot">
+    <p>Adapted from <a href="https://www.viget.com/articles/visual-loudness" target="_blank" rel="noopener">Visual Loudness, Viget</a>. Button colors come from our tokens (orange-500, blue-700, button edge). Button labels are shown in Maison Neue where it's installed, otherwise Helvetica.</p>
+  </div>
+</div>
+</body>
+</html>
